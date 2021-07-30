@@ -1,5 +1,22 @@
 ## Nebula Embedded language
 
+## Command line interface
+Fllowing command will compile ```program.neb``` source code file and write pitput to ```program.nebc``` file.
+```bash
+nebula program.neb -o program
+```
+
+Flags:
+|Short|Long|Scheme|Description|
+|-|-|-|-|
+|```-o```|```--output```|```--output <file>```|Output file name|
+||```--stdout```|```--stdout```|Output will be passed to ___stdout___ stream encoded to base64|
+|```-s```|```--source```|```--source <source code>```|Source code from input string|
+|```-sb64```|```--source-base64```|```--source-base64```|If set - input will be interpreted as base64 string| 
+|```-in```|```--in```|```--in <statement>```|Declares global input variable|
+|```-out```|```--out```|```--out <statement>```|Declares global output variable|
+
+
 ### Code
 ```glsl
 in vec3 normal;
