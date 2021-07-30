@@ -51,6 +51,7 @@ UnsignedRealExponentialNotation = (UnsignedReal | UnsignedInt) 'e' ['+' | '-'] U
 UnsignedReal = UnsignedInt '.' UnsignedInt
 UnsignedInt = Digit{Digit}
 BoolConst = 'true' | 'false'
+// TODO: change to "_asd72.asd"
 StringLiteral = '"' {Letter | Digit} '"'
 
 Operator = BinaryOperator | UnaryOperator
