@@ -14,7 +14,8 @@ Statement = ((Declaration | Assign | FunctionCall) ';') | ForStatement | IfState
 Assign = Identifier ’=’ Expression
 Initialization = Type IdentifierDeclaration
 IdentifierDeclaration = Ident [‘=’ Expression] // fix
-Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' | 'mat4' | dict //TODO: add struct type
+Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
+       | 'mat4' | dict //TODO: add struct type
 
 Const = IntConst | UnsignedIntConst | LongConst | UnsignedLongConst | FloatConst | DoubleConst | StringConst | BoolConst
 UnsignedLongConst = UnsignedInt 'ul'
@@ -31,15 +32,18 @@ UnsignedInt = Digit{Digit}
 BoolConst = 'true' | 'false'
 StringLiteral = '"' {Letter | Digit} '"'
 
-EmbeddedFunctions = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
+Operator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&'
+
+EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
                     | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln' | 'floor' | 'ceil' | 'round' | 'curl' 
                     | 'gaussian'
-KeyWords = 'bool' | 'int' | 'long' | 'float' | 'double' | 'string' | 'void' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' | 'mat4' | 'dict' 
+KeyWord = 'bool' | 'int' | 'long' | 'float' | 'double' | 'string' | 'void' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' | 'mat4' | 'dict' 
            | 'true' | 'false' | 'do' | 'while' | 'for' | 'if' | 'else' | 'const'
 Letter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' 
          | 'w' | 'x' | 'y' | 'z'
 Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-SpecSsign = '.' | ',' | ':' | ';' | '(' | ')' | '=' | '+' | '-' | '*' | '/' | '<' | '>' | '!' | '^' | WhiteSpace | EndOfLine
+SpecialSymbol = '.' | ',' | ':' | ';' | '(' | ')' | '{' | '}' | '[' | ']' | '=' | '+' | '-' | '*' | '/' | '<' | '>' | '!' | '^' 
+                | WhiteSpace | EndOfLine
 WhiteSpace = ' ' | '\t'
 EndOfLine = '\n' | '\r' | '\r\n' | '\n\r'
 EndOfFile = '\0'
