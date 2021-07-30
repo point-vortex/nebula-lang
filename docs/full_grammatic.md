@@ -1,15 +1,17 @@
 # Full grammatic
 ```
 
-IfStatement = 'if' '(' BoolExpr ')' DoBlock 1 'else' DoBlock2
+IfStatement = 'if' '(' BoolExpr ')' DoBlock 1 ['else' DoBlock2]
 DoBlock1 = DoBlock
 DoBlock2 = DoBlock
-ForStatement = for '('  ')' // ---------- finish
+ForStatement = for '(' [VariableInitialization | Assign] ';' [Expression] ';' [Assign] ')' DoBlock
+WhileStatement = 'while' '(' [Expression] ')' DoBlock
+DoWhileStatement = 'do' DoBlock 'while' '(' Expression ')'
 
 DoBlock = DoSection | Statement
 DoSection = '{' StatementsList '}'
 StatementsList = Statement {Statement}
-Statement = ((Declaration | Assign | FunctionCall) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
+Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
 
 Assign = Identifier ’=’ Expression
 
@@ -21,7 +23,10 @@ FunctionCall = Identifier '(' [ {(Identifier | Const) ','} (Identifier | Const)]
 VariableInitialization = VariableDeclaration ['=' Expression]
 VariableDeclaration = Type Identifier
 
-Expression = 
+Expression = TermWithUnaryOperator {BinaryOperator TermWithUnaryOperator}
+ParenthesesExpression = '(' Expression ')'
+TermWithUnaryOperator = ([UnaryOperator] Term) | Term [UnaryOperator]
+Term = FunctionCall | Identifier | Const | ParenthesesExpression
 
 Identifier = Letter {Letter | Digit}
 Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
@@ -43,7 +48,10 @@ UnsignedInt = Digit{Digit}
 BoolConst = 'true' | 'false'
 StringLiteral = '"' {Letter | Digit} '"'
 
-Operator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&'
+Operator = BinaryOperator | UnaryOperator
+BinaryOperator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&' 
+                 | '+=' | '-=' | '*=' | '/='
+UnaryOperator = '++' | '--'
 
 EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
                     | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln' | 'floor' | 'ceil' | 'round' | 'curl' 
