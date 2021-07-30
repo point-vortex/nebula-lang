@@ -13,20 +13,25 @@ DoSection = '{' StatementsList '}'
 StatementsList = Statement {Statement}
 Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
 
-Assign = Identifier ’=’ Expression
+Assign = ChainedAccessor '=' Expression
+
+StructDefinitionShort = 'struct' Identifier ';'
+StructDefinition = 'struct' Identifier '{' [ {VariableDeclaration ';'} VariableDeclaration] '}' ';'
+
+ChainedAccessor = Identifier {('.' Identifier) | ('[' Expression ']')} 
 
 FunctionDefinition = FunctionPrototype ';'
 FunctionDeclaration = FunctionPrototype DoSection
 FunctionPrototype = (Type | VoidType) Identifier '(' [ {VariableDeclaration ','} VariableDeclaration] ')'
-FunctionCall = Identifier '(' [ {(Identifier | Const) ','} (Identifier | Const)] ')'
+FunctionCall = Identifier '(' [ {(ChainedAccessor | Const) ','} (ChainedAccessor | Const)] ')'
 
 VariableInitialization = VariableDeclaration ['=' Expression]
 VariableDeclaration = Type Identifier
 
 Expression = TermWithUnaryOperator {BinaryOperator TermWithUnaryOperator}
 ParenthesesExpression = '(' Expression ')'
-TermWithUnaryOperator = ([UnaryOperator] Term) | Term [UnaryOperator]
-Term = FunctionCall | Identifier | Const | ParenthesesExpression
+TermWithUnaryOperator = ([UnaryOperator] Term) | (Term [UnaryOperator]) //TODO: fix rvalue problem
+Term = FunctionCall | ChainedAccessor | Const | ParenthesesExpression
 
 Identifier = Letter {Letter | Digit}
 Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
@@ -51,7 +56,7 @@ StringLiteral = '"' {Letter | Digit} '"'
 Operator = BinaryOperator | UnaryOperator
 BinaryOperator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&' 
                  | '+=' | '-=' | '*=' | '/='
-UnaryOperator = '++' | '--'
+UnaryOperator = '++' | '--' | '-' | '+'
 
 EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
                     | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln' | 'floor' | 'ceil' | 'round' | 'curl' 
