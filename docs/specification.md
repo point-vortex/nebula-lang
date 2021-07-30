@@ -43,3 +43,25 @@ Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 true
 false
 ```
+## Instructions
+### Syntax
+```
+DoSection = '{' StatementsList '}'
+StatementsList = Statement {Statement}
+Statement = ((Declaration | Assign | FunctionCall) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
+```
+### Overview
+Statements define algorithm that must be executed in program.
+### Semantics
+The instructions are executed sequentially in writing order until a branch operator or a loop operator is encountered.
+### Example
+```glsl
+void main() {
+    int foo = 20;
+    foo = 22;
+    if (foo > 20) {
+        foo = 20;
+    }
+    int result = foo;
+}
+```
