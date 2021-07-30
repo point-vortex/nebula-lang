@@ -32,6 +32,9 @@ UnsignedInt = Digit{Digit}
 BoolConst = 'true' | 'false'
 StringLiteral = '"' {Letter | Digit} '"'
 
+FunctionCall = Identifier '(' [ {(Identifier | Const)] ','} (Identifier | Const)] ')'
+
+Identifier = Letter {Letter | Digit}
 Operator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&'
 
 EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
