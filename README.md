@@ -6,7 +6,7 @@ Fllowing command will compile ```program.neb``` source code file and write pitpu
 nebula program.neb -o program
 ```
 
-Flags:
+### Flags:
 |Short|Long|Scheme|Description|
 |-|-|-|-|
 |```-o```|```--output```|```--output <file>```|Output file name|
@@ -16,8 +16,23 @@ Flags:
 |```-in```|```--in```|```--in <statement>```|Declares global input variable|
 |```-out```|```--out```|```--out <statement>```|Declares global output variable|
 
+## Native types
+|Specifier|Description|
+|-|-|
+|int|Integer value type|
+|long|Long integer value type|
+|float|Floating point value type|
+|vec2|2 floats vector|
+|vec3|3 floats vector|
+|vec4|4 floats vector|
+|mat2|2x2 float matrix|
+|mat3|3x3 float matrix|
+|mat4|4x4 float matrix|
+|string|ascii string type|
 
-### Code
+
+
+## Example code
 ```glsl
 in vec3 normal;
 in float grayscale = 0.2f;// Default value is 0.2f
