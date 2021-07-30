@@ -6,16 +6,27 @@ DoBlock1 = DoBlock
 DoBlock2 = DoBlock
 ForStatement = for '('  ')' // ---------- finish
 
-DoBlock = ('{' StatementList '}') | Statement
+DoBlock = DoSection | Statement
 DoSection = '{' StatementsList '}'
 StatementsList = Statement {Statement}
 Statement = ((Declaration | Assign | FunctionCall) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
 
 Assign = Identifier ’=’ Expression
-Initialization = Type IdentifierDeclaration
-IdentifierDeclaration = Ident [‘=’ Expression] // fix
+
+FunctionDefinition = FunctionPrototype ';'
+FunctionDeclaration = FunctionPrototype DoSection
+FunctionPrototype = (Type | VoidType) Identifier '(' [ {VariableDeclaration ','} VariableDeclaration] ')'
+FunctionCall = Identifier '(' [ {(Identifier | Const) ','} (Identifier | Const)] ')'
+
+VariableInitialization = VariableDeclaration ['=' Expression]
+VariableDeclaration = Type Identifier
+
+Expression = 
+
+Identifier = Letter {Letter | Digit}
 Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
        | 'mat4' | dict //TODO: add struct type
+VoidType = 'void'
 
 Const = IntConst | UnsignedIntConst | LongConst | UnsignedLongConst | FloatConst | DoubleConst | StringConst | BoolConst
 UnsignedLongConst = UnsignedInt 'ul'
@@ -32,9 +43,6 @@ UnsignedInt = Digit{Digit}
 BoolConst = 'true' | 'false'
 StringLiteral = '"' {Letter | Digit} '"'
 
-FunctionCall = Identifier '(' [ {(Identifier | Const)] ','} (Identifier | Const)] ')'
-
-Identifier = Letter {Letter | Digit}
 Operator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&'
 
 EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
