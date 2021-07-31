@@ -23,7 +23,7 @@ Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 - Each literal must have a type.
 - The value of the literal must be in the range of representative values for its type.
 ### Examples
-```glsl
+```c
 12
 -12
 12u

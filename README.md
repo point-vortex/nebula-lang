@@ -34,6 +34,12 @@ nebula program.neb -o program
 
 ## Example code
 ```glsl
+struct Flow1 {
+    dict foo;
+    spreadsheet bar;
+};
+inflow1 Flow1 in1;
+
 in vec3 normal;
 in float grayscale = 0.2f;// Default value is 0.2f
 in int brightness;
