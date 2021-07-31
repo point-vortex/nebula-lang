@@ -1,5 +1,11 @@
 #include <iostream>
 
+int func() {
+    return 1;
+}
+
+const int a = func();
+
 int main() {
     std::cout << "Hello, World!" << a << std::endl;
 

@@ -9,11 +9,12 @@ DoBlock2 = DoBlock
 ForStatement = for '(' [VariableInitialization | Assign | Expression] ';' [Expression] ';' [Expression | Assign] ')' DoBlock
 WhileStatement = 'while' '(' [Expression] ')' DoBlock
 DoWhileStatement = 'do' DoBlock 'while' '(' Expression ')'
+ReturnStatement = 'return' [Expression]
 
 DoBlock = DoSection | Statement
 DoSection = '{' StatementsList '}'
 StatementsList = Statement {Statement}
-Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement
+Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement | ReturnStatement
 
 Assign = ChainedAccessor '=' Expression
 
@@ -53,10 +54,13 @@ LongConst = IntConst 'l'
 IntConst = [Sign]UnsignedInt
 FloatConst = DoubleConst 'f'
 DoubleConst = [Sign] (UnsignedReal | UnsignedRealExponentialNotation)
+BoolConst = 'true' | 'false'
 
 Sign = '+' | '-'
 UnsignedRealExponentialNotation = (UnsignedReal | UnsignedInt) 'e' ['+' | '-'] UnsignedInt
-UnsignedReal = UnsignedInt '.' UnsignedInt
+UnsignedReal = ’.’ UnsignedInt
+                    | UnsignedInt ’.’
+                    | UnsignedInt ’.’ UnsignedInt
 UnsignedInt = Digit{Digit}
 StringLiteral = '"' {StringAlphabet} '"'
 
@@ -69,8 +73,11 @@ RvalueUnaryOperator = '-' | '+' | LvalueUnaryOperator
 EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
                     | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln' | 'floor' | 'ceil' | 'round' | 'curl' 
                     | 'gaussian'
-KeyWord = 'bool' | 'int' | 'long' | 'float' | 'double' | 'string' | 'void' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' | 'mat4' | 'dict' 
-           | 'true' | 'false' | 'do' | 'while' | 'for' | 'if' | 'else' | 'const'
+KeyWord = 'bool' | 'int' | 'long' | 'float' | 'double' | 'string' | 'void' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
+            | 'mat4' | 'dict' | 'spreadsheet' | 'return'
+            | 'true' | 'false' | 'do' | 'while' | 'for' | 'if' | 'else' | 'const'
+Alphabet = StringAlphabet | '"'
+StringAlphabet = Letter | Digit | SpecialSymbol 
 Letter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' 
          | 'w' | 'x' | 'y' | 'z'
 Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
