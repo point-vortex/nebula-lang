@@ -7,7 +7,7 @@ IfStatement = 'if' '(' BoolExpr ')' DoBlock 1 ['else' DoBlock2]
 DoBlock1 = DoBlock
 DoBlock2 = DoBlock
 ForStatement = for '(' [VariableInitialization | Assign | Expression] ';' [Expression] ';' [Expression | Assign] ')' DoBlock
-WhileStatement = 'while' '(' [Expression] ')' DoBlock
+WhileStatement = 'while' '(' Expression ')' DoBlock
 DoWhileStatement = 'do' DoBlock 'while' '(' Expression ')'
 ReturnStatement = 'return' [Expression]
 
@@ -34,7 +34,7 @@ BraceEnclosedList = '{' [(ChainedAccessor | Const) {',' (ChainedAccessor | Const
 ContextVariableDeclaration = (FlowSpecifier | ContextSpecifier) Type Identifier
 VariableDeclaration = ['const'] Type Identifier
 
-Expression = TermWithUnaryOperator {BinaryOperator TermWithUnaryOperator}
+Expression = (TermWithUnaryOperator | ParenthesesExpression) {BinaryOperator (TermWithUnaryOperator | ParenthesesExpression)}
 ParenthesesExpression = '(' Expression ')'
 TermWithUnaryOperator = Term | ([LvalueUnaryOperator] Lvalue) | (Lvalue [LvalueUnaryOperator]) 
                              | ([RvalueUnaryOperator] Rvalue) | (Rvalue [RvalueUnaryOperator])
@@ -58,9 +58,7 @@ BoolConst = 'true' | 'false'
 
 Sign = '+' | '-'
 UnsignedRealExponentialNotation = (UnsignedReal | UnsignedInt) 'e' ['+' | '-'] UnsignedInt
-UnsignedReal = ’.’ UnsignedInt
-                    | UnsignedInt ’.’
-                    | UnsignedInt ’.’ UnsignedInt
+UnsignedReal = (’.’ UnsignedInt) | (UnsignedInt ’.’) | (UnsignedInt ’.’ UnsignedInt)
 UnsignedInt = Digit{Digit}
 StringLiteral = '"' {StringAlphabet} '"'
 
