@@ -181,12 +181,32 @@ MyStruct baz = {10, vec3(1, 0, 0)}
 ```
 
 ## Context input
-TODO: finish
 ### Syntax
+```
+ContextVariableInitialization = ContextVariableDeclaration ['=' (Expression | BraceEnclosedList)]
+ContextVariableDeclaration = (FlowSpecifier | ContextSpecifier) Type Identifier
+
+FlowSpecifier = InFlowSpecifier | OutFlowSpecifier
+ContextSpecifier = InContextSpecifier | OutContextSpecifier
+
+InContextSpecifier = 'in'
+OutContextSpecifier = 'out'
+InFlowSpecifier = 'inflow' ('1' - '5')
+OutFlowSpecifier = 'outflow' ('1' - '5')
+```
 ### Overview
+// TODO: come up with design of flows workflow.
 ### Restrictions
 ### Semantics
+TODO: finish | Problem with access to flow variables.
 ### Example
+```glsl
+struct Inflow1Type {
+    vec3 point;
+};
+inflow1 Inflow1Type;
+```
+
 
 ## Assignment instruction
 ### Syntax
