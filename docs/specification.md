@@ -17,20 +17,23 @@
 # 1.2 Syntax
 ## General symbols
 ```
-Alphabet = StringAlphabet | '"'
-StringAlphabet = Letter | Digit | SpecialSymbol 
+Alphabet =        StringAlphabet | '"'
+StringAlphabet =  Letter | Digit | SpecialSymbol 
 
-Letter =        'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' 
-                | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'
-                
-Digit =         '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+Letter =          LowercaseLetter | UppercaseLetter
+LowercaseLetter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' 
+                  | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'
+UppercaseLetter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' 
+                  | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y1' | 'Z'
+                                  
+Digit =           '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 
-SpecialSymbol = '.' | ',' | ':' | ';' | '(' | ')' | '{' | '}' | '[' | ']' | '=' | '+' | '-' | '*' | '/' | '<' | '>' 
-                | '!' | '^' | '_' | WhiteSpace | EndOfLine
+SpecialSymbol =   '.' | ',' | ':' | ';' | '(' | ')' | '{' | '}' | '[' | ']' | '=' | '+' | '-' | '*' | '/' | '<' | '>' 
+                  | '!' | '^' | '_' | WhiteSpace | EndOfLine
                 
-WhiteSpace =    ' ' | '\t'
-EndOfLine =     '\n' | '\r' | '\r\n' | '\n\r'
-EndOfFile =     '\0'
+WhiteSpace =      ' ' | '\t'
+EndOfLine =       '\n' | '\r' | '\r\n' | '\n\r'
+EndOfFile =       '\0'
 ```
 ## Literals
 ### Syntax
@@ -222,7 +225,7 @@ struct Point {
     int id;
 };
 
-Point point = {vec3(1, 2, 3), vec3(255, 0, 0), vec3(1, 1, 0), 10} 
+Point point = {vec3(1, 2, 3), vec3(255, 0, 0), vec3(1, 1, 0), 10};
 ```
 
 ## Context input

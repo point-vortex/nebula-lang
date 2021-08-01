@@ -29,7 +29,8 @@ ReturnStatement = 'return' [Expression]
 DoBlock = DoSection | Statement
 DoSection = '{' StatementsList '}'
 StatementsList = Statement {Statement}
-Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement | DoWhileStatement | ReturnStatement
+Statement = ((VariableInitialization | Assign | Expression) ';') | ForStatement | IfStatement | WhileStatement 
+            | DoWhileStatement | ReturnStatement
 
 Assign = ChainedAccessor '=' Expression
 
@@ -58,8 +59,8 @@ Rvalue = Const | ParenthesesExpression | FunctionCall
 Lvalue = ChainedAccessor
 
 Identifier = Letter {Letter | Digit}
-Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
-       | 'mat4' | 'dict' | 'spreadsheet' | Identifier
+Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 'bool' | 'vec2' | 'vec3' | 'vec4' 
+       | 'mat2' | 'mat3' | 'mat4' | 'dict' | 'spreadsheet' | Identifier
 VoidType = 'void'
 
 Const = IntConst | UnsignedIntConst | LongConst | UnsignedLongConst | FloatConst | DoubleConst | StringConst | BoolConst
@@ -78,24 +79,27 @@ UnsignedInt = Digit{Digit}
 StringLiteral = '"' {StringAlphabet} '"'
 
 Operator = BinaryOperator | UnaryOperator
-BinaryOperator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' | '|' | '&' 
-                 | '+=' | '-=' | '*=' | '/='
+BinaryOperator = '+' | '-' | '*' | '/' | '=' | '==' | '<=' | '>=' | '<' | '>' | '!=' | '||' | '&&' | '<<' | '>>' | '^' 
+                 | '|' | '&' | '+=' | '-=' | '*=' | '/='
 LvalueUnaryOperator = '++' | '--' 
 RvalueUnaryOperator = '-' | '+' | LvalueUnaryOperator
 
-EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' | 'asin' | 'acos' 
-                    | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln' | 'floor' | 'ceil' | 'round' | 'curl' 
-                    | 'gaussian'
+EmbeddedFunction = 'min' | 'max' | 'rand' | 'randint' | 'cross' | 'dot' | 'normalize' | 'sin' | 'cos' | 'tan' | 'ctg' 
+                   | 'asin' | 'acos' | 'atan' | 'actg' | 'radians' | 'degrees' | 'pow' | 'sqrt' | 'sqr' | 'log' | 'ln'
+                   | 'floor' | 'ceil' | 'round' | 'curl' | 'gaussian'
 KeyWord = 'bool' | 'int' | 'long' | 'float' | 'double' | 'string' | 'void' | 'vec2' | 'vec3' | 'vec4' | 'mat2' | 'mat3' 
-            | 'mat4' | 'dict' | 'spreadsheet' | 'return'
-            | 'true' | 'false' | 'do' | 'while' | 'for' | 'if' | 'else' | 'const'
+          | 'mat4' | 'dict' | 'spreadsheet' | 'return'
+          | 'true' | 'false' | 'do' | 'while' | 'for' | 'if' | 'else' | 'const'
 Alphabet = StringAlphabet | '"'
 StringAlphabet = Letter | Digit | SpecialSymbol 
-Letter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' 
-         | 'w' | 'x' | 'y' | 'z'
+Letter = LowercaseLetter | UppercaseLetter
+LowercaseLetter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' 
+                  | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z'
+UppercaseLetter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' 
+                  | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y1' | 'Z'
 Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-SpecialSymbol = '.' | ',' | ':' | ';' | '(' | ')' | '{' | '}' | '[' | ']' | '=' | '+' | '-' | '*' | '/' | '<' | '>' | '!' | '^' | '_'
-                | WhiteSpace | EndOfLine
+SpecialSymbol = '.' | ',' | ':' | ';' | '(' | ')' | '{' | '}' | '[' | ']' | '=' | '+' | '-' | '*' | '/' | '<' | '>' 
+                | '!' | '^' | '_' | WhiteSpace | EndOfLine
 WhiteSpace = ' ' | '\t'
 EndOfLine = '\n' | '\r' | '\r\n' | '\n\r'
 EndOfFile = '\0'
