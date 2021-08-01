@@ -1,5 +1,19 @@
 # 1.1 Description
 
+|Metasymbol|Definition|
+|-|-|
+|```=```|Defined as|
+|```|```|Alternative|
+|```[ x ]```|0 or 1 instance of the ```x```|
+|```{ x }```|0 or more instances of the ```x```|
+|```( x | y )```|Grouping: any of x or y|
+|```Zxy```|Non terminal|
+|```zxy```|Non terminal|
+|```'1'```|Terminal|
+|```"1"```|Terminal|
+
+> Extended Backus–Naur form
+
 # 1.2 Syntax
 ## General symbols
 ```
@@ -51,8 +65,8 @@ StringAlphabet = Letter | Digit | SpecialSymbol
 12ul
 1.12
 -1.12
-1.12d
--1.12d
+1.12f
+-1.12f
 2e+12
 2e12
 2e-12
@@ -132,6 +146,7 @@ float d = 2.f + 2u + 3ul;
 ```
 
 ## Variable declaration
+TODO: add arrays syntax (int[3] a = {...})
 ### Syntax
 ```
 VariableInitialization = VariableDeclaration ['=' (Expression | BraceEnclosedList)]
@@ -145,15 +160,15 @@ Type = 'int' | 'unsigned int' | 'long' | 'unsigned long' | 'float' | 'double' | 
 A variable declaration specifies a set of variable identifiers that can be used in a program.
 
 ### Restrictions
-- Each identifier must be declared only once in scope.
+- Each variable must be declared only once in scope.
 - Brace enclosed list can be used only to initialize arrays and structs.  
-- Quantity of brace enclosed list members must match the members quantity of the structure that it initializes.
+- Quantity of brace enclosed list members must match the members quantity of the data structure that it initializes.
 - The type of each brace enclosed list member must be able to cast to corresponding data structure member.
 
 ### Semantics
-- Identifier in scope can shadow other identifier in outer scope if their names are same.
-- Identifier can be initialized in declaration.
-- If identifier isn't initialized - it will get default value.
+- Variable in scope can shadow other variable in outer scope if their names are same.
+- Variable can be initialized in declaration.
+- If variable isn't initialized - it will get default value.
 
 ### Example
 ```glsl
@@ -192,7 +207,7 @@ Structs are needed to store complex data types.
 
 ### Restrictions
 - Fields identifiers are unique per structure.
-- Field type can't be the same as the structure name.
+- Field type can't be the same as the parent structure name.
 
 ### Semantics
 - Structs can store fields with different data types.
@@ -206,6 +221,8 @@ struct Point {
     vec3 normal;
     int id;
 };
+
+Point point = {vec3(1, 2, 3), vec3(255, 0, 0), vec3(1, 1, 0), 10} 
 ```
 
 ## Context input
@@ -243,6 +260,8 @@ Assign = ChainedAccessor '=' Expression
 ```
 
 ### Overview
+Lvalue is an identifier or chained access on the left of '=' 
+
 ### Restrictions
 - Rvalue type must be same or able to be cast to lvalue type.
 ### Semantics

@@ -1,4 +1,19 @@
 # Full grammatic
+
+|Metasymbol|Definition|
+|-|-|
+|```=```|Defined as|
+|```|```|Alternative|
+|```[ x ]```|0 or 1 instance of the ```x```|
+|```{ x }```|0 or more instances of the ```x```|
+|```( x | y )```|Grouping: any of x or y|
+|```Zxy```|Non terminal|
+|```zxy```|Non terminal|
+|```'1'```|Terminal|
+|```"1"```|Terminal|
+
+> Extended Backus–Naur form
+
 ```
 Program = ProgramSegment 'void' 'main' '(' ')' DoSection ProgramSegment
 ProgramSegment = {ContextVariableInitialization | FunctionDeclaration | FunctionDefinition | VariableInitialization}
