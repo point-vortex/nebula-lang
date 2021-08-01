@@ -177,36 +177,64 @@ struct MyStruct {
     vec3 bar;
 };
 
-MyStruct baz = {10, vec3(1, 0, 0)}
+MyStruct baz = {10, vec3(1, 0, 0)};
+```
+
+## Structs
+### Syntax
+```
+StructDefinitionShort = 'struct' Identifier ';'
+StructDefinition = 'struct' Identifier '{' {VariableDeclaration ';'} '}' ';'
+```
+
+### Overview
+Structs are needed to store complex data types.
+
+### Restrictions
+- Fields identifiers are unique per structure.
+- Field type can't be the same as the structure name.
+
+### Semantics
+- Structs can store fields with different data types.
+- Structure field can be accessed using operator '.'.
+
+### Example
+```glsl
+struct Point {
+    vec3 position;
+    vec3 color;
+    vec3 normal;
+    int id;
+};
 ```
 
 ## Context input
 ### Syntax
 ```
 ContextVariableInitialization = ContextVariableDeclaration ['=' (Expression | BraceEnclosedList)]
-ContextVariableDeclaration = (FlowSpecifier | ContextSpecifier) Type Identifier
+ContextVariableDeclaration = ContextSpecifier Type Identifier
 
-FlowSpecifier = InFlowSpecifier | OutFlowSpecifier
 ContextSpecifier = InContextSpecifier | OutContextSpecifier
 
 InContextSpecifier = 'in'
 OutContextSpecifier = 'out'
-InFlowSpecifier = 'inflow' ('1' - '5')
-OutFlowSpecifier = 'outflow' ('1' - '5')
 ```
 ### Overview
-// TODO: come up with design of flows workflow.
+Context inputs are used to get variables from outside execution context.
+
 ### Restrictions
+- Context input variables have global scope.
+- You can declare context input just as a global variable.
+
 ### Semantics
-TODO: finish | Problem with access to flow variables.
+- If variable can be got from the context - it will be passed to context input.
+
 ### Example
 ```glsl
-struct Inflow1Type {
-    vec3 point;
-};
-inflow1 Inflow1Type;
+in vec3 position;
+out vec3 color = vec3(255, 255, 0);
+out vec3 normal;
 ```
-
 
 ## Assignment instruction
 ### Syntax

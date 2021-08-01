@@ -31,7 +31,7 @@ FunctionCall = Identifier '(' [(ChainedAccessor | Const) {',' (ChainedAccessor |
 ContextVariableInitialization = ContextVariableDeclaration ['=' (Expression | BraceEnclosedList)]
 VariableInitialization = VariableDeclaration ['=' (Expression | BraceEnclosedList)]
 BraceEnclosedList = '{' [(ChainedAccessor | Const) {',' (ChainedAccessor | Const)}] '}'
-ContextVariableDeclaration = (FlowSpecifier | ContextSpecifier) Type Identifier
+ContextVariableDeclaration = ContextSpecifier Type Identifier
 VariableDeclaration = ['const'] Type Identifier
 
 Expression = (TermWithUnaryOperator | ParenthesesExpression) {BinaryOperator (TermWithUnaryOperator | ParenthesesExpression)}
@@ -85,11 +85,8 @@ WhiteSpace = ' ' | '\t'
 EndOfLine = '\n' | '\r' | '\r\n' | '\n\r'
 EndOfFile = '\0'
 
-FlowSpecifier = InFlowSpecifier | OutFlowSpecifier
 ContextSpecifier = InContextSpecifier | OutContextSpecifier
 
 InContextSpecifier = 'in'
 OutContextSpecifier = 'out'
-InFlowSpecifier = 'inflow' ('1' - '5')
-OutFlowSpecifier = 'outflow' ('1' - '5')
 ```
