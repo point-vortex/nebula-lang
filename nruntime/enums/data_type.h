@@ -1,0 +1,13 @@
+#ifndef NEBULA_LANG_DATA_TYPE_H
+#define NEBULA_LANG_DATA_TYPE_H
+
+enum DATA_TYPE {
+    DT_NONE,
+    DT_STRING,
+    DT_INT,
+    DT_LONG,
+    DT_FLOAT,
+    DT_DOUBLE,
+};
+
+#endif //NEBULA_LANG_DATA_TYPE_H
