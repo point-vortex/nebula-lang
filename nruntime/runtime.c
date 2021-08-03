@@ -35,18 +35,18 @@ bool runtime(struct runtime_context *context, struct program_token *token, struc
         switch (token->instruction) {
             case I_PUSH:
                 if (context->meta_shift >= context->meta_length) return false;
-                if (context->stack_shift + token->data_size >= context->stack_size) return false;
+                if (context->stack_shift + token->size >= context->stack_size) return false;
 
-                context->meta[context->meta_shift].type = token->data_type;
-                context->meta[context->meta_shift].size = token->data_size;
-                if (token->data_type == DT_STRING) {
+                context->meta[context->meta_shift].type = token->type;
+                context->meta[context->meta_shift].size = token->size;
+                if (token->type == DT_STRING) {
                     memcpy(context->stack + context->stack_shift, token->data._string,
-                           token->data_size * sizeof(uint8_t));
+                           token->size * sizeof(uint8_t));
                 } else {
-                    memcpy(context->stack + context->stack_shift, &token->data, token->data_size * sizeof(uint8_t));
+                    memcpy(context->stack + context->stack_shift, &token->data, token->size * sizeof(uint8_t));
                 }
                 ++context->meta_shift;
-                context->stack_shift += token->data_size * sizeof(uint8_t);
+                context->stack_shift += token->size * sizeof(uint8_t);
                 break;
             case I_POP:
                 if (context->meta_shift <= 0) return false;

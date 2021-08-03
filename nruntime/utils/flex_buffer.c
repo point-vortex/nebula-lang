@@ -20,36 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef NEBULA_LANG_TOKENIZER_H
-#define NEBULA_LANG_TOKENIZER_H
+#include <malloc.h>
+#include <memory.h>
+#include <stdint.h>
+#include "flex_buffer.h"
 
-#include "utils/nstatus.h"
-#include "enums/instruction.h"
-#include "enums/data_type.h"
+NSTATUS flex_buffer_resize(struct flex_buffer* this, unsigned long new_capacity) {
+    void* old_data = this->data;
+    this->data = malloc(new_capacity * sizeof(uint8_t));
+    if (!this->data) {
+        this->data = old_data;
+        return NFATAL;
+    }
+    memcpy(this->data, old_data, this->capacity);
+    this->capacity = new_capacity;
+    return NSUCCESS;
+}
 
-struct program {
-    void *cursor;
-    void *entry;
-};
+NSTATUS flex_buffer_construct(struct flex_buffer* this, unsigned long start_capacity) {
+    this = malloc(sizeof(struct flex_buffer));
+    this->data = malloc(start_capacity * sizeof(uint8_t));
+    this->capacity = start_capacity;
+    this->payload_size = 0;
+    return NSUCCESS;
+}
 
-union dynamic_data {
-    int _int;
-    long _long;
-    float _float;
-    double _double;
-    const char *_string;
-};
+void flex_buffer_destruct(struct flex_buffer* this) {
+    free(this->data);
+    free(this);
+}
 
-struct program_token {
-//    union dynamic_data data;
-    void* data;
-    enum DATA_TYPE type;
-    enum INSTRUCTION instruction;
-    uint32_t size;
-};
-
-NSTATUS nextToken(struct program *program, struct program_token *token);
-
-void cleanupToken(struct program_token *token);
-
-#endif //NEBULA_LANG_TOKENIZER_H
+NSTATUS flex_buffer_store(struct flex_buffer* this, void* data, unsigned long size) {
+    if (this->capacity < size) {
+        flex_buffer_resize(this, size);
+    }
+    memcpy(this->data, data, size * sizeof(uint8_t));
+    this->payload_size = size;
+    return NSUCCESS;
+}

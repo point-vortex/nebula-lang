@@ -20,36 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef NEBULA_LANG_TOKENIZER_H
-#define NEBULA_LANG_TOKENIZER_H
+#ifndef NEBULA_LANG_FLEX_BUFFER_H
+#define NEBULA_LANG_FLEX_BUFFER_H
 
-#include "utils/nstatus.h"
-#include "enums/instruction.h"
-#include "enums/data_type.h"
+#include "nstatus.h"
 
-struct program {
-    void *cursor;
-    void *entry;
-};
-
-union dynamic_data {
-    int _int;
-    long _long;
-    float _float;
-    double _double;
-    const char *_string;
-};
-
-struct program_token {
-//    union dynamic_data data;
+struct flex_buffer {
     void* data;
-    enum DATA_TYPE type;
-    enum INSTRUCTION instruction;
-    uint32_t size;
+    unsigned long capacity;
+    unsigned long payload_size,
 };
 
-NSTATUS nextToken(struct program *program, struct program_token *token);
+NSTATUS flex_buffer_construct(struct flex_buffer* this, unsigned long start_capacity);
+void flex_buffer_destruct(struct flex_buffer* this);
+NSTATUS flex_buffer_store(struct flex_buffer* this, void* data, unsigned long size);
 
-void cleanupToken(struct program_token *token);
 
-#endif //NEBULA_LANG_TOKENIZER_H
+#endif //NEBULA_LANG_FLEX_BUFFER_H

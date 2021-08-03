@@ -48,40 +48,40 @@ NSTATUS nextToken(struct program *program, struct program_token *token) {
     switch (token->instruction) {
         case I_STORE:
         case I_FETCH:
-            token->data_size = *(uint32_t *) program->cursor;
+            token->size = *(uint32_t *) program->cursor;
             program->cursor += sizeof(uint32_t);
 
-            token->data_type = DT_STRING;
-            token->data._string = (const char *) malloc(token->data_size * sizeof(uint8_t)); //TODO: use allocator
-            memcpy((void *) token->data._string, program->cursor, token->data_size * sizeof(uint8_t));
-            program->cursor += token->data_size * sizeof(uint8_t);
+            token->type = DT_STRING;
+            token->data._string = (const char *) malloc(token->size * sizeof(uint8_t)); //TODO: use allocator
+            memcpy((void *) token->data._string, program->cursor, token->size * sizeof(uint8_t));
+            program->cursor += token->size * sizeof(uint8_t);
             break;
         case I_PUSH:
-            token->data_type = (enum DATA_TYPE) (*(uint16_t *) program->cursor);
+            token->type = (enum DATA_TYPE) (*(uint16_t *) program->cursor);
             program->cursor += sizeof(uint16_t);
 
 
-            switch (token->data_type) {
+            switch (token->type) {
                 case DT_STRING:
-                    token->data_size = *(uint32_t *) program->cursor;
+                    token->size = *(uint32_t *) program->cursor;
                     program->cursor += sizeof(uint32_t);
-                    token->data._string = (const char *) malloc(
-                            token->data_size * sizeof(uint8_t)); //TODO: use allocator
-                    memcpy((void *) token->data._string, program->cursor, token->data_size * sizeof(uint8_t));
+                    //TODO: use allocator
+                    token->data._string = (const char *) malloc(token->size * sizeof(uint8_t));
+                    memcpy((void *) token->data._string, program->cursor, token->size * sizeof(uint8_t));
                     break;
                 default:
-                    token->data_size = getDataTypeSize(token->data_type);
-                    if (!token->data_size) return NFATAL;
-                    memcpy((void *) &token->data, program->cursor, token->data_size * sizeof(uint8_t));
+                    token->size = getDataTypeSize(token->type);
+                    if (!token->size) return NFATAL;
+                    memcpy((void *) &token->data, program->cursor, token->size * sizeof(uint8_t));
                     break;
             }
-            program->cursor += token->data_size * sizeof(uint8_t);
+            program->cursor += token->size * sizeof(uint8_t);
             break;
         case I_ADD:
         case I_TERMINATE:
         case I_POP:
-            token->data_size = 0;
-            token->data_type = DT_NONE;
+            token->size = 0;
+            token->type = DT_NONE;
         default:
             return NFATAL;
     }
@@ -89,7 +89,7 @@ NSTATUS nextToken(struct program *program, struct program_token *token) {
 }
 
 void cleanupToken(struct program_token *token) {
-    if (token->data_type == DT_STRING) {
+    if (token->type == DT_STRING) {
         free((void *) token->data._string);
         token->data._string = NULL;
     }
