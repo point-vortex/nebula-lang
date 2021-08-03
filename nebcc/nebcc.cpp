@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef NEBULA_LANG_NRUNTIME_H
-#define NEBULA_LANG_NRUNTIME_H
+#include <iostream>
 
-#include "tokenizer.h"
-#include "runtime.h"
-
-#endif //NEBULA_LANG_NRUNTIME_H
+int main(int argc, const char* argv[]) {
+    std::cout << "Args:" << std::endl;
+    for (int i = 0; i < argc; i++) {
+        std::cout << argv[i] << std::endl;
+    }
+}
