@@ -20,10 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <memory.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <malloc.h>
 
 #include "tokenizer.h"
 
@@ -42,7 +39,7 @@ uint32_t getDataTypeSize(enum DATA_TYPE type) {
     }
 }
 
-NSTATUS nextToken(struct program *program, struct program_token *token) {
+NSTATUS nextToken(struct program *program, struct program_token *token, struct flex_buffer* buffer) {
     token->instruction = (enum INSTRUCTION) (*(uint16_t *) program->cursor);
     program->cursor += sizeof(uint16_t);
     switch (token->instruction) {
@@ -50,32 +47,20 @@ NSTATUS nextToken(struct program *program, struct program_token *token) {
         case I_FETCH:
             token->size = *(uint32_t *) program->cursor;
             program->cursor += sizeof(uint32_t);
-
             token->type = DT_STRING;
-            token->data._string = (const char *) malloc(token->size * sizeof(uint8_t)); //TODO: use allocator
-            memcpy((void *) token->data._string, program->cursor, token->size * sizeof(uint8_t));
-            program->cursor += token->size * sizeof(uint8_t);
             break;
         case I_PUSH:
             token->type = (enum DATA_TYPE) (*(uint16_t *) program->cursor);
             program->cursor += sizeof(uint16_t);
-
-
             switch (token->type) {
                 case DT_STRING:
                     token->size = *(uint32_t *) program->cursor;
                     program->cursor += sizeof(uint32_t);
-                    //TODO: use allocator
-                    token->data._string = (const char *) malloc(token->size * sizeof(uint8_t));
-                    memcpy((void *) token->data._string, program->cursor, token->size * sizeof(uint8_t));
                     break;
                 default:
                     token->size = getDataTypeSize(token->type);
                     if (!token->size) return NFATAL;
-                    memcpy((void *) &token->data, program->cursor, token->size * sizeof(uint8_t));
-                    break;
             }
-            program->cursor += token->size * sizeof(uint8_t);
             break;
         case I_ADD:
         case I_TERMINATE:
@@ -85,12 +70,9 @@ NSTATUS nextToken(struct program *program, struct program_token *token) {
         default:
             return NFATAL;
     }
+    NSTATUS status = flex_buffer_store(buffer, program->cursor, token->size);
+    if (status != NSUCCESS) return status;
+    token->data = buffer->data;
+    program->cursor += token->size * sizeof(uint8_t);
     return NSUCCESS;
-}
-
-void cleanupToken(struct program_token *token) {
-    if (token->type == DT_STRING) {
-        free((void *) token->data._string);
-        token->data._string = NULL;
-    }
 }

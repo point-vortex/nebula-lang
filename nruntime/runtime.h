@@ -43,8 +43,8 @@ struct runtime_context createRuntimeContext(long stack_buffer_size, long stack_c
 
 void cleanupContext(struct runtime_context *context);
 
-bool runtime(struct runtime_context *context, struct program_token *token, struct program *program);
+NSTATUS runtime(struct runtime_context *context, struct flex_buffer *buffer, struct program *program);
 
-bool execute(void *program, long stack_buffer_size, long stack_cells_size);
+NSTATUS execute(void *program, long stack_buffer_size, long stack_cells_size);
 
 #endif //NEBULA_LANG_RUNTIME_H

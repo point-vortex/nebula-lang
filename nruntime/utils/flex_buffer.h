@@ -26,14 +26,14 @@
 #include "nstatus.h"
 
 struct flex_buffer {
-    void* data;
+    void *data;
     unsigned long capacity;
     unsigned long payload_size,
 };
 
-NSTATUS flex_buffer_construct(struct flex_buffer* this, unsigned long start_capacity);
-void flex_buffer_destruct(struct flex_buffer* this);
-NSTATUS flex_buffer_store(struct flex_buffer* this, void* data, unsigned long size);
+struct flex_buffer *flex_buffer_construct(unsigned long start_capacity);
+void flex_buffer_destruct(struct flex_buffer *this);
+NSTATUS flex_buffer_store(struct flex_buffer *this, void *data, unsigned long size);
 
 
 #endif //NEBULA_LANG_FLEX_BUFFER_H

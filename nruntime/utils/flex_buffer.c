@@ -25,8 +25,8 @@
 #include <stdint.h>
 #include "flex_buffer.h"
 
-NSTATUS flex_buffer_resize(struct flex_buffer* this, unsigned long new_capacity) {
-    void* old_data = this->data;
+NSTATUS flex_buffer_resize(struct flex_buffer *this, unsigned long new_capacity) {
+    void *old_data = this->data;
     this->data = malloc(new_capacity * sizeof(uint8_t));
     if (!this->data) {
         this->data = old_data;
@@ -37,20 +37,25 @@ NSTATUS flex_buffer_resize(struct flex_buffer* this, unsigned long new_capacity)
     return NSUCCESS;
 }
 
-NSTATUS flex_buffer_construct(struct flex_buffer* this, unsigned long start_capacity) {
-    this = malloc(sizeof(struct flex_buffer));
+struct flex_buffer *flex_buffer_construct(unsigned long start_capacity) {
+    struct flex_buffer *this = malloc(sizeof(struct flex_buffer));
+    if (!this) return NULL;
     this->data = malloc(start_capacity * sizeof(uint8_t));
+    if (!this->data) {
+        free(this);
+        return NULL;
+    }
     this->capacity = start_capacity;
     this->payload_size = 0;
-    return NSUCCESS;
+    return this;
 }
 
-void flex_buffer_destruct(struct flex_buffer* this) {
+void flex_buffer_destruct(struct flex_buffer *this) {
     free(this->data);
     free(this);
 }
 
-NSTATUS flex_buffer_store(struct flex_buffer* this, void* data, unsigned long size) {
+NSTATUS flex_buffer_store(struct flex_buffer *this, void *data, unsigned long size) {
     if (this->capacity < size) {
         flex_buffer_resize(this, size);
     }

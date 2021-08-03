@@ -24,6 +24,7 @@
 #define NEBULA_LANG_TOKENIZER_H
 
 #include "utils/nstatus.h"
+#include "utils/flex_buffer.h"
 #include "enums/instruction.h"
 #include "enums/data_type.h"
 
@@ -32,13 +33,13 @@ struct program {
     void *entry;
 };
 
-union dynamic_data {
-    int _int;
-    long _long;
-    float _float;
-    double _double;
-    const char *_string;
-};
+//union dynamic_data {
+//    int _int;
+//    long _long;
+//    float _float;
+//    double _double;
+//    const char *_string;
+//};
 
 struct program_token {
 //    union dynamic_data data;
@@ -48,8 +49,6 @@ struct program_token {
     uint32_t size;
 };
 
-NSTATUS nextToken(struct program *program, struct program_token *token);
-
-void cleanupToken(struct program_token *token);
+NSTATUS nextToken(struct program *program, struct program_token *token, struct flex_buffer* buffer);
 
 #endif //NEBULA_LANG_TOKENIZER_H
