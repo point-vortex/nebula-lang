@@ -42,7 +42,7 @@ uint32_t getDataTypeSize(enum DATA_TYPE type) {
     }
 }
 
-bool nextToken(struct program *program, struct program_token *token) {
+NSTATUS nextToken(struct program *program, struct program_token *token) {
     token->instruction = (enum INSTRUCTION) (*(uint16_t *) program->cursor);
     program->cursor += sizeof(uint16_t);
     switch (token->instruction) {
@@ -71,7 +71,7 @@ bool nextToken(struct program *program, struct program_token *token) {
                     break;
                 default:
                     token->data_size = getDataTypeSize(token->data_type);
-                    if (!token->data_size) return false;
+                    if (!token->data_size) return NFATAL;
                     memcpy((void *) &token->data, program->cursor, token->data_size * sizeof(uint8_t));
                     break;
             }
@@ -83,9 +83,9 @@ bool nextToken(struct program *program, struct program_token *token) {
             token->data_size = 0;
             token->data_type = DT_NONE;
         default:
-            return false;
+            return NFATAL;
     }
-    return true;
+    return NSUCCESS;
 }
 
 void cleanupToken(struct program_token *token) {

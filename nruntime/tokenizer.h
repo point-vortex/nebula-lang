@@ -23,6 +23,7 @@
 #ifndef NEBULA_LANG_TOKENIZER_H
 #define NEBULA_LANG_TOKENIZER_H
 
+#include "utils/nstatus.h"
 #include "enums/instruction.h"
 #include "enums/data_type.h"
 
@@ -46,7 +47,7 @@ struct program_token {
     uint32_t data_size;
 };
 
-bool nextToken(struct program *program, struct program_token *token);
+NSTATUS nextToken(struct program *program, struct program_token *token);
 
 void cleanupToken(struct program_token *token);
 

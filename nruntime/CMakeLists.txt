@@ -4,6 +4,6 @@ project(nruntime C)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SOURCE_LIB nruntime.h enums/data_type.h enums/instruction.h tokenizer.h tokenizer.c runtime.h runtime.c utils/dstack.h utils/dstack.c)
+set(SOURCE_LIB nruntime.h enums/data_type.h enums/instruction.h tokenizer.h tokenizer.c runtime.h runtime.c utils/dstack.h utils/dstack.c utils/nstatus.h)
 
 add_library(nruntime STATIC ${SOURCE_LIB})

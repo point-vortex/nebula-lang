@@ -23,8 +23,11 @@
 #include <malloc.h>
 #include <memory.h>
 #include <stdint.h>
+#include <errno.h>
 
 #include "dstack.h"
+
+extern int errno;
 
 struct dstack *dstack_construct(unsigned long capacity, unsigned long buffer_capacity) {
     struct dstack *this = (struct dstack *) malloc(sizeof(struct dstack));
@@ -37,16 +40,22 @@ struct dstack *dstack_construct(unsigned long capacity, unsigned long buffer_cap
     return this;
 }
 
-bool extend_buffer(struct dstack *this, unsigned long delta) {
+NSTATUS extend_buffer(struct dstack *this, unsigned long delta) {
     void *old_buffer = this->buffer;
     unsigned long old_capacity = this->buffer_capacity;
     unsigned long shift = this->buffer_cursor - this->buffer;
 
     this->buffer_capacity = old_capacity + delta;
     this->buffer = malloc(this->buffer_capacity * sizeof(uint8_t));
+    if (this->buffer == NULL) {
+        this->buffer = old_buffer;
+        this->buffer_capacity = old_capacity;
+        return NFATAL;
+    }
     this->buffer_cursor = this->buffer + shift;
     memcpy(this->buffer, old_buffer, old_capacity);
     free(old_buffer);
+    return NSUCCESS;
 }
 
 inline bool check_capacity_is_enough(struct dstack *this, unsigned long size) {
@@ -59,10 +68,10 @@ void dstack_destruct(struct dstack *this) {
     free(this);
 }
 
-bool dstack_push(struct dstack *this, struct dstack_item *item) {
+NSTATUS dstack_push(struct dstack *this, struct dstack_item *item) {
     const unsigned long chunk_size = 1024 * sizeof(uint8_t);
 
-    if (!item) return false;
+    if (!item) return NERROR;
 
     unsigned long size_to_extend = 0;
     while (!check_capacity_is_enough(this, size_to_extend)) {
@@ -75,18 +84,18 @@ bool dstack_push(struct dstack *this, struct dstack_item *item) {
     this->items_cursor->data = this->buffer_cursor;
     this->buffer_cursor += item->size * sizeof(uint8_t);
 
-    return true;
+    return NSUCCESS;
 }
 
-bool dstack_pop(struct dstack *this) {
+NSTATUS dstack_pop(struct dstack *this) {
     this->buffer_cursor -= this->items_cursor->size;
     --this->items_cursor;
-    return true;
+    return NSUCCESS;
 }
 
-bool dstack_top(struct dstack *this, struct dstack_item *item) {
+NSTATUS dstack_top(struct dstack *this, struct dstack_item *item) {
     *item = *this->items_cursor;
-    return true;
+    return NSUCCESS;
 }
 
 bool dstack_is_full(struct dstack *this) {
