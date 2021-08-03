@@ -33,7 +33,8 @@ struct flex_buffer {
 
 struct flex_buffer *flex_buffer_construct(unsigned long start_capacity);
 void flex_buffer_destruct(struct flex_buffer *this);
+NSTATUS flex_buffer_resize(struct flex_buffer *this, unsigned long new_capacity);
+NSTATUS flex_buffer_resize_no_copy(struct flex_buffer *this, unsigned long new_capacity);
 NSTATUS flex_buffer_store(struct flex_buffer *this, void *data, unsigned long size);
-
 
 #endif //NEBULA_LANG_FLEX_BUFFER_H

@@ -25,18 +25,6 @@
 #include <stdint.h>
 #include "flex_buffer.h"
 
-NSTATUS flex_buffer_resize(struct flex_buffer *this, unsigned long new_capacity) {
-    void *old_data = this->data;
-    this->data = malloc(new_capacity * sizeof(uint8_t));
-    if (!this->data) {
-        this->data = old_data;
-        return NFATAL;
-    }
-    memcpy(this->data, old_data, this->capacity);
-    this->capacity = new_capacity;
-    return NSUCCESS;
-}
-
 struct flex_buffer *flex_buffer_construct(unsigned long start_capacity) {
     struct flex_buffer *this = malloc(sizeof(struct flex_buffer));
     if (!this) return NULL;
@@ -55,9 +43,26 @@ void flex_buffer_destruct(struct flex_buffer *this) {
     free(this);
 }
 
+NSTATUS flex_buffer_resize(struct flex_buffer *this, unsigned long new_capacity) {
+    void *new_data = realloc(this->data, new_capacity * sizeof(uint8_t));
+    if (!new_data) return NFATAL;
+    this->data = new_data;
+    this->capacity = new_capacity;
+    return NSUCCESS;
+}
+
+NSTATUS flex_buffer_resize_no_copy(struct flex_buffer *this, unsigned long new_capacity) {
+    void *new_data = malloc(new_capacity * sizeof(uint8_t));
+    if (!new_data) return NFATAL;
+    free(this->data);
+    this->data = new_data;
+    this->capacity = new_capacity;
+    return NSUCCESS;
+}
+
 NSTATUS flex_buffer_store(struct flex_buffer *this, void *data, unsigned long size) {
     if (this->capacity < size) {
-        flex_buffer_resize(this, size);
+        flex_buffer_resize_no_copy(this, size);
     }
     memcpy(this->data, data, size * sizeof(uint8_t));
     this->payload_size = size;

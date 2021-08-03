@@ -21,86 +21,67 @@
 // SOFTWARE.
 
 #include <stdint.h>
-#include <memory.h>
 #include <malloc.h>
-#include <stdbool.h>
 
 #include "runtime.h"
-#include "tokenizer.h"
-#include "enums/instruction.h"
+#include "operations/operations.h"
 
 
 NSTATUS runtime(struct runtime_context *context, struct flex_buffer *buffer, struct program *program) {
+    NSTATUS status = NSUCCESS;
     struct program_token token;
     while (nextToken(program, &token, buffer) && token.instruction != I_TERMINATE) {
         switch (token.instruction) {
             case I_PUSH:
-                if (context->meta_shift >= context->meta_length) return false;
-                if (context->stack_shift + token.size >= context->stack_size) return false;
-
-                context->meta[context->meta_shift].type = token.type;
-                context->meta[context->meta_shift].size = token.size;
-                if (token.type == DT_STRING) {
-                    memcpy(context->stack + context->stack_shift, token.data._string,
-                           token.size * sizeof(uint8_t));
-                } else {
-                    memcpy(context->stack + context->stack_shift, &token.data, token.size * sizeof(uint8_t));
-                }
-                ++context->meta_shift;
-                context->stack_shift += token.size * sizeof(uint8_t);
+                if (dstack_is_full(context->stack)) return NERROR;
+                status = dstack_pusha(context->stack, token.data, token.size, token.type);
                 break;
             case I_POP:
-                if (context->meta_shift <= 0) return false;
-                --context->meta_shift;
+                if (dstack_is_empty(context->stack)) return NERROR;
+                status = dstack_pop(context->stack);
                 break;
             case I_FETCH:
                 // TODO: create variables map.
                 break;
 
             case I_ADD: {
-                if (context->meta_shift <= 1) return false;
-                struct stack_item_meta *l_meta = &context->meta[context->meta_shift - 2];
-                struct stack_item_meta *r_meta = &context->meta[context->meta_shift - 1];
-                void *lvalue = context->stack + context->stack_shift - l_meta->size;
-                void *rvalue = context->stack + context->stack_shift - l_meta->size - r_meta->size;
-
-                //TODO: add functions.
-
-                context->meta_shift -= 2ul;
+                struct dstack_item *operand2 = dstack_top(context->stack);
+                status = dstack_pop(context->stack);
+                if (status != NSUCCESS) return status;
+                struct dstack_item *operand1 = dstack_top(context->stack);
+                add(operand1, operand2);
             }
                 break;
         }
     }
-    return NSUCCESS;
-}
-
-NSTATUS execute(void *program, long stack_buffer_size, long stack_cells_size) {
-    struct runtime_context context = createRuntimeContext(stack_buffer_size, stack_cells_size);
-    struct program prog = {program, program};
-    struct flex_buffer *buffer = flex_buffer_construct(128);
-    if (!buffer) return NFATAL;
-
-    NSTATUS status = runtime(&context, buffer, &prog);
-
-    flex_buffer_destruct(buffer);
-    cleanupContext(&context);
     return status;
 }
 
-struct runtime_context createRuntimeContext(long stack_buffer_size, long stack_cells_quantity) {
-    struct runtime_context context;
-    context.stack_shift = 0l;
-    context.stack_shift = 0l;
-    context.stack_size = stack_cells_quantity;
-    context.stack_size = stack_buffer_size;
-    context.stack = malloc(stack_buffer_size * sizeof(int8_t));
-    context.meta = (struct stack_item_meta *) malloc(context.meta_length * sizeof(struct stack_item_meta));
-    return context;
+NSTATUS execute(void *program_binaries, long stack_buffer_size, long stack_cells_size) {
+    struct runtime_context *context = runtime_context_construct(stack_buffer_size, stack_cells_size);
+    if (!context) return NFATAL;
+    struct program program = {program_binaries, program_binaries};
+    struct flex_buffer *buffer = flex_buffer_construct(128);
+    if (!buffer) {
+        runtime_context_destruct(context);
+        return NFATAL;
+    }
+
+    NSTATUS status = runtime(context, buffer, &program);
+
+    flex_buffer_destruct(buffer);
+    runtime_context_destruct(context);
+    return status;
 }
 
-void cleanupContext(struct runtime_context *context) {
-    free(context->meta);
-    context->meta = NULL;
-    free(context->stack);
-    context->stack = NULL;
+struct runtime_context *runtime_context_construct(long stack_buffer_size, long stack_cells_quantity) {
+    struct runtime_context *this = malloc(sizeof(struct runtime_context));
+    if (!this) return NULL;
+    this->stack = dstack_construct(30, 1024);
+    return this;
+}
+
+void runtime_context_destruct(struct runtime_context *this) {
+    free(this->stack);
+    free(this);
 }

@@ -20,40 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef NEBULA_LANG_DSTACK_H
-#define NEBULA_LANG_DSTACK_H
-
-#include <stdbool.h>
-#include "../enums/data_type.h"
-#include "nstatus.h"
-
-struct dstack_item {
-    void *data;
-    unsigned long size;
-    enum DATA_TYPE type;
-};
-
-struct dstack {
-    void *buffer;
-    unsigned long buffer_capacity;
-    void *buffer_cursor;
-
-    struct dstack_item *items;
-    unsigned long items_capacity;
-    struct dstack_item *items_cursor;
-
-    unsigned long items_chunk_size;
-    unsigned long buffer_chunk_size;
-};
-
-struct dstack *dstack_construct(unsigned long capacity, unsigned long buffer_capacity);
-void dstack_destruct(struct dstack *this);
-NSTATUS dstack_push(struct dstack *this, struct dstack_item *item);
-NSTATUS dstack_pusha(struct dstack *this, void *data, unsigned long size, enum DATA_TYPE type);
-NSTATUS dstack_pop(struct dstack *this);
-struct dstack_item *dstack_top(struct dstack *this);
-bool dstack_is_full(struct dstack *this);
-bool dstack_is_empty(struct dstack *this);
+#include "dmap.h"
 
 
-#endif //NEBULA_LANG_DSTACK_H

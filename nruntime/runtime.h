@@ -24,14 +24,10 @@
 #define NEBULA_LANG_RUNTIME_H
 
 #include "tokenizer.h"
+#include "utils/dstack.h"
 
 struct runtime_context {
-    unsigned long stack_size;
-    unsigned long meta_length;
-    unsigned long meta_shift;
-    unsigned long stack_shift;
-    void *stack;
-    struct stack_item_meta *meta;
+    struct dstack* stack;
 };
 
 struct stack_item_meta {
@@ -39,9 +35,9 @@ struct stack_item_meta {
     enum DATA_TYPE type;
 };
 
-struct runtime_context createRuntimeContext(long stack_buffer_size, long stack_cells_quantity);
+struct runtime_context* runtime_context_construct(long stack_buffer_size, long stack_cells_quantity);
 
-void cleanupContext(struct runtime_context *context);
+void runtime_context_destruct(struct runtime_context *this);
 
 NSTATUS runtime(struct runtime_context *context, struct flex_buffer *buffer, struct program *program);
 

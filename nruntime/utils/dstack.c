@@ -40,22 +40,34 @@ struct dstack *dstack_construct(unsigned long capacity, unsigned long buffer_cap
     return this;
 }
 
-NSTATUS extend_buffer(struct dstack *this, unsigned long delta) {
-    void *old_buffer = this->buffer;
-    unsigned long old_capacity = this->buffer_capacity;
+NSTATUS resize_buffer(struct dstack *this, unsigned long new_capacity) {
     unsigned long shift = this->buffer_cursor - this->buffer;
+    void* new_buffer = realloc(this->buffer, new_capacity);
+    if (!new_buffer) return NFATAL;
 
-    this->buffer_capacity = old_capacity + delta;
-    this->buffer = malloc(this->buffer_capacity * sizeof(uint8_t));
-    if (this->buffer == NULL) {
-        this->buffer = old_buffer;
-        this->buffer_capacity = old_capacity;
-        return NFATAL;
-    }
+    this->buffer = new_buffer;
+    this->buffer_capacity = new_capacity;
     this->buffer_cursor = this->buffer + shift;
-    memcpy(this->buffer, old_buffer, old_capacity);
-    free(old_buffer);
     return NSUCCESS;
+}
+
+NSTATUS extend_buffer(struct dstack *this, unsigned long delta) {
+    return resize_buffer(this, this->buffer_capacity + delta);
+}
+
+NSTATUS resize_items(struct dstack *this, unsigned long new_capacity) {
+    unsigned long shift = this->items_cursor - this->items;
+    struct dstack_item* new_items = (struct dstack_item*)realloc(this->items, new_capacity * sizeof(struct dstack_item*));
+    if (!new_items) return NFATAL;
+
+    this->items = new_items;
+    this->items_capacity = new_capacity;
+    this->items_cursor = this->items + shift;
+    return NSUCCESS;
+}
+
+NSTATUS extend_items(struct dstack *this, unsigned long delta) {
+    return resize_items(this, this->items_capacity + delta);
 }
 
 inline bool check_capacity_is_enough(struct dstack *this, unsigned long size) {
@@ -69,10 +81,8 @@ void dstack_destruct(struct dstack *this) {
 }
 
 NSTATUS dstack_push(struct dstack *this, struct dstack_item *item) {
-    const unsigned long chunk_size = 1024 * sizeof(uint8_t);
-
     if (!item) return NERROR;
-
+    // add buffer data type.
     unsigned long size_to_extend = 0;
     while (!check_capacity_is_enough(this, size_to_extend)) {
         size_to_extend += chunk_size;
@@ -87,15 +97,22 @@ NSTATUS dstack_push(struct dstack *this, struct dstack_item *item) {
     return NSUCCESS;
 }
 
+NSTATUS dstack_pusha(struct dstack *this, void *data, unsigned long size, enum DATA_TYPE type) {
+    struct dstack_item item;
+    item.data = data;
+    item.size = size;
+    item.type = type;
+    return dstack_push(this, &item);
+}
+
 NSTATUS dstack_pop(struct dstack *this) {
     this->buffer_cursor -= this->items_cursor->size;
     --this->items_cursor;
     return NSUCCESS;
 }
 
-NSTATUS dstack_top(struct dstack *this, struct dstack_item *item) {
-    *item = *this->items_cursor;
-    return NSUCCESS;
+struct dstack_item *dstack_top(struct dstack *this) {
+    return this->items_cursor;
 }
 
 bool dstack_is_full(struct dstack *this) {
