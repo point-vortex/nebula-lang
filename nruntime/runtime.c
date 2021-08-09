@@ -25,6 +25,7 @@
 
 #include "runtime.h"
 #include "operations/operations.h"
+#include "utils/ram.h"
 
 
 NSTATUS runtime(struct runtime_context *context, struct flex_buffer *buffer, struct program *program) {
