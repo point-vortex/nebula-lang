@@ -27,13 +27,6 @@
 #include "nstatus.h"
 
 NSTATUS run(struct ram* ram) {
-    nword r1 = 0;
-    nword r2 = 0;
-    nword r3 = 0;
-    nword r4 = 0;
-
-    // Lets suppose that ram is preparad (ip, sp, ...)
-
     bool running = true;
     while (running) {
         switch (ram->memory[ram->ip++]) {
@@ -42,48 +35,48 @@ NSTATUS run(struct ram* ram) {
                 ram->memory[--ram->sp] = ram->memory[ram->ip++];
                 continue;
             case I_PUSH:
-                r1 = ram->memory[ram->ip++];
-                ram->memory[--ram->sp] = ram->memory[r1];
+                ram->r1 = ram->memory[ram->ip++];
+                ram->memory[--ram->sp] = ram->memory[ram->r1];
                 continue;
             case I_POP:
-                r1 = ram->memory[ram->ip++];
-                ram->memory[r1] = ram->memory[ram->sp++];
+                ram->r1 = ram->memory[ram->ip++];
+                ram->memory[ram->r1] = ram->memory[ram->sp++];
                 continue;
             /// ARITHMETIC OPERATIONS
             case I_ADD:
-                r2 = ram->memory[ram->sp++];
-                r1 = ram->memory[ram->sp++];
-                ram->memory[--ram->sp] = r1 + r2;
+                ram->r2 = ram->memory[ram->sp++];
+                ram->r1 = ram->memory[ram->sp++];
+                ram->memory[--ram->sp] = ram->r1 + ram->r2;
             /// FLOW CONTROL
             case I_JMP:
                 ram->ip += ram->memory[ram->ip];
                 continue;
             case I_JMPZ:
-                r1 = ram->memory[ram->sp++];
-                r1 ? ram->ip += ram->memory[ram->ip] : ram->ip++;
+                ram->r1 = ram->memory[ram->sp++];
+                ram->r1 ? ram->ip += ram->memory[ram->ip] : ram->ip++;
                 continue;
             /// FUNCTIONS CALL
             case I_CALL:
-                r1 = ram->memory[ram->ip++];
-                r2 = ram->memory[ram->ip++];
-                r2 = ram->sp + r2;
+                ram->r1 = ram->memory[ram->ip++];
+                ram->r2 = ram->memory[ram->ip++];
+                ram->r2 = ram->sp + ram->r2;
                 ram->memory[--ram->sp] = ram->ip;
                 ram->memory[--ram->sp] = ram->fp;
                 ram->memory[--ram->sp] = ram->lp;
-                ram->ip = r1;
-                ram->fp = r2;
+                ram->ip = ram->r1;
+                ram->fp = ram->r2;
                 ram->lp = ram->sp - 1;
                 continue;
             case I_RET:
-                r1 = ram->memory[ram->sp++];
-                r2 = ram->lp;
+                ram->r1 = ram->memory[ram->sp++];
+                ram->r2 = ram->lp;
                 ram->sp = ram->fp;
-                ram->lp = ram->memory[r2 + 1];
-                ram->fp = ram->memory[r2 + 2];
-                ram->ip = ram->memory[r2 + 3];
+                ram->lp = ram->memory[ram->r2 + 1];
+                ram->fp = ram->memory[ram->r2 + 2];
+                ram->ip = ram->memory[ram->r2 + 3];
                 continue;
             case I_SYSCALL:
-                r1 = ram->memory[ram->ip++];
+                ram->r1 = ram->memory[ram->ip++];
                 // SYSTEM CALL;
                 continue;
             case I_HALT:
@@ -91,29 +84,23 @@ NSTATUS run(struct ram* ram) {
                 continue;
             /// VARIABLES
             case I_LOAD:
-                r1 = ram->memory[ram->ip++];
-                r2 = ram->lp - r1;
-                ram->memory[--ram->sp] = ram->memory[r2];
+                ram->r1 = ram->memory[ram->ip++];
+                ram->r2 = ram->lp - ram->r1;
+                ram->memory[--ram->sp] = ram->memory[ram->r2];
                 continue;
             case I_STORE:
-                r1 = ram->memory[ram->ip++];
-                r2 = ram->lp - r1;
-                ram->memory[r2] = ram->memory[ram->sp++];
+                ram->r1 = ram->memory[ram->ip++];
+                ram->r2 = ram->lp - ram->r1;
+                ram->memory[ram->r2] = ram->memory[ram->sp++];
                 continue;
             case I_ARG:
-                r1 = ram->memory[ram->ip++];
-                r2 = ram->fp - r1 - 1;
-                ram->memory[--ram->sp] = ram->memory[r2];
+                ram->r1 = ram->memory[ram->ip++];
+                ram->r2 = ram->fp - ram->r1 - 1;
+                ram->memory[--ram->sp] = ram->memory[ram->r2];
                 continue;
             default:
                 return NFATAL;
         }
     }
-}
-
-NSTATUS prepare_ram(struct ram* ram) {
-    ram->ip = 0;
-    ram->sp = ram->max_address;
-    ram->fp = ram->sp;
-    ram->lp = ram->sp - 1;
+    return NSUCCESS;
 }

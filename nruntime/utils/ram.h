@@ -24,18 +24,37 @@
 #define NEBULA_LANG_RAM_H
 
 #include "nstatus.h"
-#include "flex_buffer.h"
 #include "../enums/nword.h"
 
+/**
+ * Random Access Memory for Nebula runtime.
+ * @c
+ * @author Danil Andreev
+ * @copyright Copyright (c) 2021 Danil Maksimovich Andrieiev
+ */
 struct ram {
-    nword* memory;
+    /// Memory buffer
+    nword *memory;
+    /// Instruction pointer
     nword ip;
+    /// Stack pointer
     nword sp;
+    /// Frame pointer
     nword fp;
+    /// Locals pointer
     nword lp;
+
     nword max_address;
+
+    /// Registers
+    nword r1;
+    nword r2;
+    nword r3;
+    nword r4;
 };
 
+NSTATUS ram_reset(struct ram* ram);
 
+struct ram* ram_construct(nword capacity);
 
 #endif //NEBULA_LANG_RAM_H

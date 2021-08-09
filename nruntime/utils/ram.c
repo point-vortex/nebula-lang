@@ -20,12 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <malloc.h>
+
 #include "ram.h"
 
-void *ram_heap(struct ram *this) {
-    return this->allocator->data + this->heap_start_shift;
+NSTATUS ram_reset(struct ram* ram) {
+    if (!ram) return NFATAL;
+
+    ram->ip = 0;
+    ram->sp = ram->max_address;
+    ram->fp = ram->sp;
+    ram->lp = ram->sp - 1;
+
+    /// Initialize registers
+    ram->r1 = 0;
+    ram->r2 = 0;
+    ram->r3 = 0;
+    ram->r4 = 0;
+    return NSUCCESS;
 }
 
-void *ram_data(struct ram *this) {
-    return this->allocator->data + this->data_start_shift;
+struct ram* ram_construct(nword capacity) {
+    struct ram* this = malloc(sizeof(struct ram));
+    this->max_address = capacity;
+    ram_reset(this);
+    return this;
 }
